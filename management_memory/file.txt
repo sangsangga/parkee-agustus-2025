@@ -1,0 +1,10 @@
+Q: Bagaimana memori untuk list dialokasikan dan dikelola dalam metode createList?
+A: objek list dialokasikan di heap dan akan bertambah besar dengan bertambahnya data
+
+Q: Apa yang akan terjadi pada memori yang dialokasikan untuk list setelah metode
+createList selesai dieksekusi?
+A: karena list berada di dalam createList (local scope), dan tidak ada yang mereferensi lagi maka list tersebut akan diremove oleh GC java
+
+
+Q: Apakah ada potensi kebocoran memori dalam kode di atas? Jelaskan jawaban Anda.
+A: Tidak ada, karena freqMap adalah local variable dalam method CountPairs, ketika method selesai freqmap akan diremove GC

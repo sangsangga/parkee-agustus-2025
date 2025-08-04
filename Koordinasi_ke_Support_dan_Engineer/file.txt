@@ -1,0 +1,28 @@
+Pertanyaan:
+
+Anda menemukan bahwa ada isu kritis yang mempengaruhi sistem production dan memerlukan koordinasi dengan tim support dan engineer. Jelaskan langkah-langkah yang akan Anda ambil untuk mengkoordinasikan penyelesaian masalah ini.
+
+
+Jawaban:
+Saya akan melakukan beberapa langkah, yaitu:
+1. Dokumentasikan isu
+    a. lokasi isu(file, service, etc)
+    b. identifikasi root problem (jika memang sudah tahu penyebabnya) dan solusi (jika memang sudah tahu fix nya)
+    c. siapkan Pertanyaan perihal isu(code ini untuk apa, dependency apa saja)
+
+2. Siapkan room meeting
+    a. siapkan war room
+    b. invite tim terkait
+        i. lead support dan pic support
+        ii. lead engineer dan pic engineer
+    c. diskusikan isu
+        i. paparkan dokumentasi isu yang telah ditemukan
+        ii. hasilkan solusi
+
+3. Eksekusi solusi
+    a. lakukan test dengan QA
+    b. jika solusi berhasil, lakukan deployment
+4. Update Stakeholder
+    a. jika solusi terdeploy, update pihak terkait
+5. Lakukan post mortem
+    a. review penyebab isu, perbaikan proses ke depan
