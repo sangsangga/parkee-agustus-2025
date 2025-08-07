@@ -1,11 +1,13 @@
 import { useState } from 'react'
+import { parkingService } from '../api/parkingService'
 
-function CheckOut({ onCheckoutTicket, getTicketByPlateNumber }) {
+function CheckOut() {
   const [plateNumber, setPlateNumber] = useState('')
   const [message, setMessage] = useState('')
   const [checkoutResult, setCheckoutResult] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     
     if (!plateNumber.trim()) {
@@ -13,22 +15,25 @@ function CheckOut({ onCheckoutTicket, getTicketByPlateNumber }) {
       return
     }
 
-    const ticket = getTicketByPlateNumber(plateNumber.toUpperCase())
-    
-    if (!ticket) {
-      setMessage('No ticket found for this plate number')
-      return
-    }
+    setIsLoading(true)
+    setMessage('')
 
-    if (ticket.checkOutTime) {
-      setMessage('This ticket has already been checked out')
-      return
+    try {
+      const result = await parkingService.checkOut(plateNumber.toUpperCase())
+      
+      if (result.success) {
+        setCheckoutResult(result.data)
+        setPlateNumber('')
+        setMessage('Checkout completed successfully!')
+      } else {
+        setMessage(result.error || 'Failed to process checkout')
+      }
+    } catch (error) {
+      setMessage('An unexpected error occurred')
+      console.error('Check-out error:', error)
+    } finally {
+      setIsLoading(false)
     }
-
-    const checkoutTicket = onCheckoutTicket(plateNumber.toUpperCase())
-    setCheckoutResult(checkoutTicket)
-    setPlateNumber('')
-    setMessage('Checkout completed successfully!')
   }
 
   const handleNewCheckout = () => {
@@ -37,7 +42,7 @@ function CheckOut({ onCheckoutTicket, getTicketByPlateNumber }) {
   }
 
   const formatDuration = (checkInTime, checkOutTime) => {
-    const duration = checkOutTime - new Date(checkInTime)
+    const duration = new Date(checkOutTime) - new Date(checkInTime)
     const hours = Math.floor(duration / (1000 * 60 * 60))
     const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60))
     return `${hours}h ${minutes}m`
@@ -59,11 +64,16 @@ function CheckOut({ onCheckoutTicket, getTicketByPlateNumber }) {
               placeholder="Enter plate number (e.g., ABC123)"
               className="form-input"
               autoFocus
+              disabled={isLoading}
             />
           </div>
           
-          <button type="submit" className="submit-btn">
-            Process Check-Out
+          <button 
+            type="submit" 
+            className="submit-btn"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Processing Check-Out...' : 'Process Check-Out'}
           </button>
           
           {message && (
@@ -78,9 +88,9 @@ function CheckOut({ onCheckoutTicket, getTicketByPlateNumber }) {
           <div className="ticket-info">
             <p><strong>Plate Number:</strong> {checkoutResult.plateNumber}</p>
             <p><strong>Check-in Time:</strong> {new Date(checkoutResult.checkInTime).toLocaleString()}</p>
-            <p><strong>Check-out Time:</strong> {checkoutResult.checkOutTime.toLocaleString()}</p>
+            <p><strong>Check-out Time:</strong> {new Date(checkoutResult.checkOutTime).toLocaleString()}</p>
             <p><strong>Duration:</strong> {formatDuration(checkoutResult.checkInTime, checkoutResult.checkOutTime)}</p>
-            <p><strong>Total Price:</strong> ${checkoutResult.totalPrice.toFixed(2)}</p>
+            <p><strong>Total Price:</strong> ${checkoutResult.totalPrice?.toFixed(2) || '0.00'}</p>
             <p><strong>Rate:</strong> $5.00 per hour</p>
           </div>
           <button onClick={handleNewCheckout} className="new-checkout-btn">

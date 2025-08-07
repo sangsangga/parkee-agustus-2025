@@ -10,84 +10,94 @@ body {
   background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
   min-height: 100vh;
   color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* App container */
-.app {
+#root {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   min-height: 100vh;
+}
+
+.app {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
 }
 
-/* Header */
 .app-header {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  width: 100%;
 }
 
 .app-header h1 {
-  color: #2c3e50;
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
   text-align: center;
 }
 
 nav {
   display: flex;
-  justify-content: center;
-  gap: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
 }
 
 .nav-link {
   text-decoration: none;
-  color: #dc3545;
-  font-weight: 600;
+  color: #666;
+  font-weight: 500;
   padding: 0.75rem 1.5rem;
-  border-radius: 25px;
   transition: all 0.3s ease;
-  background: rgba(220, 53, 69, 0.1);
-  border: 2px solid transparent;
+  background: white;
+  flex: 1;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.nav-link.active {
+  background: #dc3545;
+  color: white;
+  border-bottom: 2px solid #dc3545;
 }
 
 .nav-link:hover {
   background: #dc3545;
   color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
 }
 
-/* Main content */
 .app-main {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 2rem;
+  width: 100%;
 }
 
-/* Container styles */
 .checkin-container,
 .checkout-container {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 2.5rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  max-width: 500px;
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   width: 100%;
   text-align: center;
 }
 
 .checkin-container h2,
 .checkout-container h2 {
-  color: #2c3e50;
-  font-size: 1.8rem;
-  margin-bottom: 2rem;
+  color: #333;
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
   font-weight: 600;
 }
 
@@ -107,61 +117,55 @@ nav {
 }
 
 .form-group label {
-  font-weight: 600;
-  color: #2c3e50;
-  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  font-size: 0.9rem;
 }
 
 .form-input {
-  padding: 1rem;
-  border: 2px solid #e1e8ed;
-  border-radius: 10px;
-  font-size: 1rem;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.9rem;
   transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.9);
+  background: white;
+  width: 100%;
+  color: black;
 }
 
 .form-input:focus {
   outline: none;
   border-color: #dc3545;
-  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
-  transform: translateY(-1px);
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1);
 }
 
 .form-input::placeholder {
   color: #95a5a6;
 }
 
-/* Button styles */
 .submit-btn,
 .new-ticket-btn,
 .new-checkout-btn {
-  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  background: #dc3545;
   color: white;
   border: none;
-  padding: 1rem 2rem;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 1rem;
+  width: 100%;
 }
 
 .submit-btn:hover,
 .new-ticket-btn:hover,
 .new-checkout-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+  background: #c82333;
 }
 
-.submit-btn:active,
-.new-ticket-btn:active,
-.new-checkout-btn:active {
-  transform: translateY(0);
-}
 
-/* Message styles */
 .message {
   padding: 1rem;
   border-radius: 10px;
@@ -185,6 +189,7 @@ nav {
 .ticket-display,
 .checkout-display {
   text-align: center;
+  animation: slideIn 0.5s ease-out;
 }
 
 .ticket-display h3,
@@ -214,40 +219,6 @@ nav {
   font-weight: 600;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-  .app-header {
-    padding: 1rem;
-  }
-  
-  .app-header h1 {
-    font-size: 1.5rem;
-  }
-  
-  nav {
-    gap: 1rem;
-  }
-  
-  .nav-link {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-  
-  .app-main {
-    padding: 1rem;
-  }
-  
-  .checkin-container,
-  .checkout-container {
-    padding: 1.5rem;
-  }
-  
-  .checkin-container h2,
-  .checkout-container h2 {
-    font-size: 1.5rem;
-  }
-}
-
 /* Animation for ticket creation */
 @keyframes slideIn {
   from {
@@ -260,7 +231,32 @@ nav {
   }
 }
 
-.ticket-display,
-.checkout-display {
-  animation: slideIn 0.5s ease-out;
+/* Responsive design */
+@media (max-width: 768px) {
+  .app {
+    padding: 1rem;
+  }
+  
+  .app-header {
+    padding: 1.5rem;
+  }
+  
+  .app-header h1 {
+    font-size: 1.3rem;
+  }
+  
+  .nav-link {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .checkin-container,
+  .checkout-container {
+    padding: 1.5rem;
+  }
+  
+  .checkin-container h2,
+  .checkout-container h2 {
+    font-size: 1.1rem;
+  }
 }
