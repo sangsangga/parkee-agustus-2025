@@ -1,8 +1,6 @@
 package parkingpos.checkinservice.service;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,29 +13,21 @@ import lombok.extern.slf4j.Slf4j;
 
 import parkingpos.checkinservice.dto.CreateTicketRequestDTO;
 import parkingpos.checkinservice.dto.CreateTicketResponseDTO;
-import parkingpos.checkinservice.dto.messaging.CheckinMessageDTO;
 import parkingpos.checkinservice.dto.ApiResponse;
 import parkingpos.checkinservice.exception.ValidationException;
 import parkingpos.checkinservice.service.contract.CheckinService;
-import parkingpos.checkinservice.service.contract.MessagePublisherService;
 
 @Service
 @Slf4j
 public class CheckinServiceImpl implements CheckinService {
 
-    private final MessagePublisherService messagePublisherService;
     private final WebClient webClient;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
-    public CheckinServiceImpl(
-        MessagePublisherService messagePublisherService,
-        WebClient webClient
-    ) {
-
-        this.messagePublisherService = messagePublisherService;
+    public CheckinServiceImpl(WebClient webClient) {
         this.webClient = webClient;
     }
 
@@ -45,15 +35,6 @@ public class CheckinServiceImpl implements CheckinService {
     public CreateTicketResponseDTO checkIn(CreateTicketRequestDTO payload) {
         log.info("Creating ticket for plate number: {}", payload.getPlateNumber());
         validateCreateCheckinPayload(payload);
-
-        String correlationId = UUID.randomUUID().toString();
-
-        CheckinMessageDTO message = new CheckinMessageDTO(
-            payload.getPlateNumber().trim().toUpperCase(),
-            ZonedDateTime.now(),
-            "checkin-service",
-            correlationId
-        );
 
         try {
             ApiResponse<CreateTicketResponseDTO> response = webClient
