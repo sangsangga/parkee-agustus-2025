@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Clean install dependencies
+# Install dependencies
 echo "Installing dependencies..."
-npm ci --only=production --ignore-scripts
+npm install --omit=optional
 
 # Build the application
 echo "Building application..."
