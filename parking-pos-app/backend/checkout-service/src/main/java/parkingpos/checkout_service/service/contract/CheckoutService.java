@@ -2,12 +2,12 @@ package parkingpos.checkout_service.service.contract;
 
 import parkingpos.checkout_service.dto.CheckoutRequestDTO;
 import parkingpos.checkout_service.dto.CheckoutResponseDTO;
-import parkingpos.checkout_service.dto.TicketDTO;
+import parkingpos.checkout_service.dto.CheckoutPreviewDTO;
 
 public interface CheckoutService {
     
     CheckoutResponseDTO checkout(CheckoutRequestDTO request);
 
-    TicketDTO getActiveTicketPreview(String plateNumber);
+    CheckoutPreviewDTO getCheckoutPreview(String plateNumber);
     
 }

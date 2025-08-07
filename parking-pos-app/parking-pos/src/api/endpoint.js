@@ -7,4 +7,4 @@ export const checkInVehicle = (data) => axiosClient.post(`${CHECKIN_BASE_URL}/ch
 
 export const checkOutVehicle = (data) => axiosClient.post(`${CHECKOUT_BASE_URL}/checkout`, data)
 
-export const getActiveTicketPreview = (plateNumber) => axiosClient.get(`${CHECKOUT_BASE_URL}/checkout/tickets/active/${plateNumber}`)  
+export const getActiveTicketPreview = (plateNumber) => axiosClient.get(`${CHECKOUT_BASE_URL}/checkout/preview/${plateNumber}`)  

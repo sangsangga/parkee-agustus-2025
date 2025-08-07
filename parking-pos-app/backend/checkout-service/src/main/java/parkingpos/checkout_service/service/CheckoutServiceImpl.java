@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import parkingpos.checkout_service.dto.ApiResponse;
 import parkingpos.checkout_service.dto.CheckoutRequestDTO;
 import parkingpos.checkout_service.dto.CheckoutResponseDTO;
+import parkingpos.checkout_service.dto.CheckoutPreviewDTO;
 import parkingpos.checkout_service.dto.TicketDTO;
 import parkingpos.checkout_service.exception.ValidationException;
 import parkingpos.checkout_service.service.contract.CheckoutService;
@@ -42,7 +43,7 @@ public class CheckoutServiceImpl implements CheckoutService {
         TicketDTO activeTicket = getActiveTicket(request.getPlateNumber().trim().toUpperCase());
         
         ZonedDateTime checkOutTime = ZonedDateTime.now();
-        CheckoutResponseDTO response = calculateCheckoutDetails(activeTicket, checkOutTime);
+        CheckoutResponseDTO response = buildCheckoutResponse(activeTicket, checkOutTime);
         
         updateTicketStatus(activeTicket.getId(), checkOutTime);
         
@@ -73,12 +74,25 @@ public class CheckoutServiceImpl implements CheckoutService {
     }
 
     @Override
-    public TicketDTO getActiveTicketPreview(String plateNumber) {
+    public CheckoutPreviewDTO getCheckoutPreview(String plateNumber) {
         TicketDTO ticket = getActiveTicket(plateNumber);
         if (ticket == null) {
             throw new ValidationException("No active ticket found", "CHECKOUT-004");
         }
-        return ticket;
+
+        CheckoutPreviewDTO preview = new CheckoutPreviewDTO();
+        preview.setTicketId(ticket.getId());
+        preview.setPlateNumber(ticket.getPlateNumber());
+        preview.setCheckInTime(ticket.getCheckInTime());
+
+        ZonedDateTime currentTime = ZonedDateTime.now();
+        long durationMinutes = Duration.between(ticket.getCheckInTime(), currentTime).toMinutes();
+        preview.setEstimatedDurationMinutes(durationMinutes);
+        preview.setEstimatedPrice(calculateCheckoutPrice(durationMinutes));
+        preview.setEstimatedCheckOutTime(currentTime);
+        preview.setStatus("Active");
+
+        return preview;
     }
 
     private TicketDTO getActiveTicket(String plateNumber) {
@@ -141,7 +155,19 @@ public class CheckoutServiceImpl implements CheckoutService {
         }
     }
 
-    private CheckoutResponseDTO calculateCheckoutDetails(TicketDTO ticket, ZonedDateTime checkOutTime) {
+    private BigDecimal calculateCheckoutPrice(long durationMinutes) {
+        BigDecimal hours = BigDecimal.valueOf(durationMinutes).divide(BigDecimal.valueOf(60), 2, RoundingMode.CEILING);
+        if (hours.compareTo(BigDecimal.ONE) < 0) {
+            hours = BigDecimal.ZERO; 
+        } else {
+            hours = hours.setScale(0, RoundingMode.FLOOR); 
+        }
+        
+        BigDecimal totalPrice = HOURLY_RATE.multiply(hours);
+        return totalPrice;
+    }
+
+    private CheckoutResponseDTO buildCheckoutResponse(TicketDTO ticket, ZonedDateTime checkOutTime) {
         CheckoutResponseDTO response = new CheckoutResponseDTO();
         
         response.setTicketId(ticket.getId());
@@ -150,20 +176,10 @@ public class CheckoutServiceImpl implements CheckoutService {
         response.setCheckOutTime(checkOutTime);
         response.setStatus("Completed");
         
-        // Calculate parking duration in minutes
         long durationMinutes = Duration.between(ticket.getCheckInTime(), checkOutTime).toMinutes();
         response.setParkingDurationMinutes(durationMinutes);
         
-        // Calculate total price based on hourly rate (3000 per hour)
-        // Minimum charge is for 1 hour, then charge per hour (rounded up)
-        BigDecimal hours = BigDecimal.valueOf(durationMinutes).divide(BigDecimal.valueOf(60), 2, RoundingMode.CEILING);
-        if (hours.compareTo(BigDecimal.ONE) < 0) {
-            hours = BigDecimal.ONE; // Minimum 1 hour charge
-        } else {
-            hours = hours.setScale(0, RoundingMode.CEILING); // Round up to nearest hour
-        }
-        
-        BigDecimal totalPrice = HOURLY_RATE.multiply(hours);
+        BigDecimal totalPrice = calculateCheckoutPrice(durationMinutes);
         response.setTotalPrice(totalPrice);
         
         return response;

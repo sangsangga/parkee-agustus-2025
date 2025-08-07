@@ -12,7 +12,7 @@ import jakarta.validation.Valid;
 import parkingpos.checkout_service.dto.ApiResponse;
 import parkingpos.checkout_service.dto.CheckoutRequestDTO;
 import parkingpos.checkout_service.dto.CheckoutResponseDTO;
-import parkingpos.checkout_service.dto.TicketDTO;
+import parkingpos.checkout_service.dto.CheckoutPreviewDTO;
 import parkingpos.checkout_service.service.contract.CheckoutService;
 
 @RestController
@@ -32,10 +32,10 @@ public class CheckoutController {
         return ApiResponse.ok(response, "Checkout completed successfully");
     }
 
-    @GetMapping("/tickets/active/{plateNumber}")
-    public ApiResponse<TicketDTO> getActiveTicket(@PathVariable String plateNumber) {
-        TicketDTO response = checkoutService.getActiveTicketPreview(plateNumber);
-        return ApiResponse.ok(response, "Active ticket found");
+    @GetMapping("/preview/{plateNumber}")
+    public ApiResponse<CheckoutPreviewDTO> getCheckoutPreview(@PathVariable String plateNumber) {
+        CheckoutPreviewDTO response = checkoutService.getCheckoutPreview(plateNumber);
+        return ApiResponse.ok(response, "Preview generated successfully");
     }
     
 }

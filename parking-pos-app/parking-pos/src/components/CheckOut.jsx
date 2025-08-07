@@ -11,35 +11,6 @@ function CheckOut() {
   const [ticketPreview, setTicketPreview] = useState(null)
   const [isPreviewLoading, setIsPreviewLoading] = useState(false)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    if (!plateNumber.trim()) {
-      setMessage('Please enter a valid plate number')
-      return
-    }
-
-    setIsLoading(true)
-    setMessage('')
-
-    try {
-      const result = await parkingService.checkOut(plateNumber.toUpperCase())
-      
-      if (result.success) {
-        setCheckoutResult(result.data)
-        setPlateNumber('')
-        setMessage('Checkout completed successfully!')
-      } else {
-        setMessage(result.error || 'Failed to process checkout')
-      }
-    } catch (error) {
-      setMessage('An unexpected error occurred')
-      console.error('Check-out error:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   // Function to get ticket preview
   const handlePreviewTicket = async (e) => {
     e.preventDefault()
@@ -94,7 +65,9 @@ function CheckOut() {
 
   const handleNewCheckout = () => {
     setCheckoutResult(null)
+    setTicketPreview(null)
     setMessage('')
+    setPlateNumber('')
   }
 
   const formatDuration = (checkInTime, checkOutTime) => {
@@ -104,12 +77,16 @@ function CheckOut() {
     return `${hours}h ${minutes}m`
   }
 
+  const formatPrice = (price) => {
+    if (!price) return 'Rp. 0'
+    return `Rp. ${Number(price).toLocaleString('id-ID')}`
+  }
+
   return (
     <div className="checkout-container">
       <h2>Vehicle Check-Out</h2>
       
       {!checkoutResult && !ticketPreview ? (
-
         <form onSubmit={handlePreviewTicket} className="checkout-form">
           <div className="form-group">
             <label htmlFor="plateNumber">Vehicle Plate Number:</label>
@@ -140,18 +117,20 @@ function CheckOut() {
           )}
         </form>
       ) : ticketPreview ? (
-
         <div className="ticket-preview">
           <h3>Ticket Information</h3>
           <div className="ticket-info">
             <p><strong>Plate Number:</strong> {ticketPreview.plateNumber}</p>
-            <p><strong>Check-in Time:</strong> {new Date(ticketPreview.checkInTime).toLocaleString()}</p>
+            <p><strong>Check-in Time:</strong> {new Date(ticketPreview.checkInTime).toLocaleString('id-ID')}</p>
             <p><strong>Duration:</strong> {formatDuration(ticketPreview.checkInTime, new Date())}</p>
-            <p><strong>Estimated Price:</strong> ${ticketPreview.estimatedPrice?.toFixed(2) || '0.00'}</p>
-            <p><strong>Rate:</strong> Rp. 3000 per hour</p> 
+            <p><strong>Estimated Price:</strong> {formatPrice(ticketPreview.estimatedPrice)}</p>
+            <p><strong>Rate:</strong> Rp. 3,000 per hour</p>
           </div>
 
-          
+          <div className="preview-warning">
+            <p><strong>Note:</strong> This is an estimated price based on current time. 
+            Final price may vary depending on actual check-out time.</p>
+          </div>
           
           <div className="action-buttons">
             <button 
@@ -181,16 +160,15 @@ function CheckOut() {
           )}
         </div>
       ) : (
-
         <div className="checkout-display">
           <h3>Check-Out Completed!</h3>
           <div className="ticket-info">
             <p><strong>Plate Number:</strong> {checkoutResult.plateNumber}</p>
-            <p><strong>Check-in Time:</strong> {new Date(checkoutResult.checkInTime).toLocaleString()}</p>
-            <p><strong>Check-out Time:</strong> {new Date(checkoutResult.checkOutTime).toLocaleString()}</p>
+            <p><strong>Check-in Time:</strong> {new Date(checkoutResult.checkInTime).toLocaleString('id-ID')}</p>
+            <p><strong>Check-out Time:</strong> {new Date(checkoutResult.checkOutTime).toLocaleString('id-ID')}</p>
             <p><strong>Duration:</strong> {formatDuration(checkoutResult.checkInTime, checkoutResult.checkOutTime)}</p>
-            <p><strong>Total Price:</strong> ${checkoutResult.totalPrice?.toFixed(2) || '0.00'}</p>
-            <p><strong>Rate:</strong> $5.00 per hour</p>
+            <p><strong>Total Price:</strong> {formatPrice(checkoutResult.totalPrice)}</p>
+            <p><strong>Rate:</strong> Rp. 3,000 per hour</p>
           </div>
           <button onClick={handleNewCheckout} className="new-checkout-btn">
             Process Another Check-Out
