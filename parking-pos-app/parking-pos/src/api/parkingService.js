@@ -39,7 +39,7 @@ export const parkingService = {
 
   async getActiveTicketPreview(plateNumber) {
     try {
-      const response = await getActiveTicketPreview({ plateNumber })
+      const response = await getActiveTicketPreview(plateNumber)
       return {
         success: true,
         data: response.data.data,
