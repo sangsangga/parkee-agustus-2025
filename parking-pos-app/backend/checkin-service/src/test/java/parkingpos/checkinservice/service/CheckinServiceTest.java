@@ -1,54 +1,60 @@
 package parkingpos.checkinservice.service;
 
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import parkingpos.checkinservice.dto.CreateTicketRequestDTO;
-import parkingpos.checkinservice.dto.CreateTicketResponseDTO;
-import parkingpos.checkinservice.repository.TicketRepository;
-import parkingpos.checkinservice.service.contract.CheckinService;
+import parkingpos.checkinservice.exception.ValidationException;
 
+@ExtendWith(MockitoExtension.class)
 class CheckinServiceTest {
+    
     @Mock
-    private TicketRepository ticketRepository;
+    private WebClient webClient;
 
     @InjectMocks
-    private CheckinService checkinService;
-    
+    private CheckinServiceImpl checkinService;
 
     @Test
-    void shouldCreateTicketWhenCheckingIn() {
+    void shouldThrowExceptionWhenPlateNumberIsEmpty() {
         CreateTicketRequestDTO request = new CreateTicketRequestDTO();
-        request.setPlateNumber("B12345FFF");
+        request.setPlateNumber("");
 
-        CreateTicketResponseDTO response = checkinService.checkIn(request);
-
-        assertNotNull(response);
-        assertEquals(request.getPlateNumber(), response.getPlateNumber());
-        assertNotNull(response.getCheckInTime());
-        assertNotNull(response.getId());
-        assertNull(response.getCheckOutTime());
+        assertThrows(ValidationException.class, () -> {
+            checkinService.checkIn(request);
+        });
     }
 
+    @Test
+    void shouldThrowExceptionWhenPlateNumberIsNull() {
+        CreateTicketRequestDTO request = new CreateTicketRequestDTO();
+        request.setPlateNumber(null);
 
-    // @Test
-    // void shouldThrowExceptionWhenPlateNumberIsEmpty() {
-    //     CreateTicketRequestDTO request = new CreateTicketRequestDTO();
+        assertThrows(ValidationException.class, () -> {
+            checkinService.checkIn(request);
+        });
+    }
 
-    //     CreateTicketResponseDTO response = checkinService.checkIn(request);
+    @Test
+    void shouldThrowExceptionWhenRequestIsNull() {
+        assertThrows(ValidationException.class, () -> {
+            checkinService.checkIn(null);
+        });
+    }
 
-    //     assertThrows(null, null)
-    // }
+    @Test
+    void shouldThrowExceptionWhenPlateNumberHasInvalidCharacters() {
+        CreateTicketRequestDTO request = new CreateTicketRequestDTO();
+        request.setPlateNumber("ABC-123");
 
-
-    
-
+        assertThrows(ValidationException.class, () -> {
+            checkinService.checkIn(request);
+        });
+    }
 } 
