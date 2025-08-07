@@ -150,6 +150,8 @@ function CheckOut() {
             <p><strong>Estimated Price:</strong> ${ticketPreview.estimatedPrice?.toFixed(2) || '0.00'}</p>
             <p><strong>Rate:</strong> Rp. 3000 per hour</p> 
           </div>
+
+          
           
           <div className="action-buttons">
             <button 
