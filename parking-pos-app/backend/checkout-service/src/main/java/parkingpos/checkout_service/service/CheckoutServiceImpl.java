@@ -26,8 +26,6 @@ public class CheckoutServiceImpl implements CheckoutService {
 
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
-    
-    // Parking rate: 3000 per hour
     private static final BigDecimal HOURLY_RATE = new BigDecimal("3000");
 
     @Autowired
@@ -41,14 +39,11 @@ public class CheckoutServiceImpl implements CheckoutService {
         log.info("Processing checkout for plate number: {}", request.getPlateNumber());
         validateCheckoutPayload(request);
 
-        // Get active ticket from ticket service
         TicketDTO activeTicket = getActiveTicket(request.getPlateNumber().trim().toUpperCase());
         
-        // Calculate checkout time and pricing
         ZonedDateTime checkOutTime = ZonedDateTime.now();
         CheckoutResponseDTO response = calculateCheckoutDetails(activeTicket, checkOutTime);
         
-        // Update ticket status to completed in ticket service
         updateTicketStatus(activeTicket.getId(), checkOutTime);
         
         log.info("Successfully processed checkout for plate number: {} with total price: {}", 
@@ -75,6 +70,15 @@ public class CheckoutServiceImpl implements CheckoutService {
         if (plateNumber.length() > 20) {
             throw new ValidationException("Plate number is too long (max 20 characters)", "CHECKOUT-003");
         }
+    }
+
+    @Override
+    public TicketDTO getActiveTicketPreview(String plateNumber) {
+        TicketDTO ticket = getActiveTicket(plateNumber);
+        if (ticket == null) {
+            throw new ValidationException("No active ticket found", "CHECKOUT-004");
+        }
+        return ticket;
     }
 
     private TicketDTO getActiveTicket(String plateNumber) {
@@ -134,7 +138,6 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         } catch (Exception e) {
             log.error("Failed to update ticket status for ticket ID: {}", ticketId, e);
-            // Don't throw exception here as checkout calculation is already done
         }
     }
 
