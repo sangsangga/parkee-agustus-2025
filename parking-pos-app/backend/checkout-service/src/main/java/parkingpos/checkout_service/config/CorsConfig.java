@@ -19,8 +19,7 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                     "http://localhost:5173", 
                     "http://127.0.0.1:5173",
-                    "https://*.railway.app",
-                    "https://*.up.railway.app"
+                    "https://grand-enchantment-production.up.railway.app"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
@@ -33,8 +32,7 @@ public class CorsConfig implements WebMvcConfigurer {
         configuration.setAllowedOrigins(Arrays.asList(
             "http://localhost:5173", 
             "http://127.0.0.1:5173",
-            "https://*.railway.app",
-            "https://*.up.railway.app"
+            "https://grand-enchantment-production.up.railway.app"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
