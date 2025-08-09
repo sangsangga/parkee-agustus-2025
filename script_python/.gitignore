@@ -1,0 +1,55 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+pip-wheel-metadata/
+*.log
+*.sqlite3
+.DS_Store
+.ipynb_checkpoints/
+# VSCode
+.vscode/
+# PyCharm
+.idea/
+# Jupyter Notebook
+*.ipynb
+# Test and coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+# mypy
+.mypy_cache/
+.dmypy.json
+# pyre
+.pyre/
+# profiling
+.prof
+# local settings
+local_settings.py
