@@ -4,14 +4,14 @@ import { parkingService } from '../api/parkingService'
 function CheckOut() {
   const [plateNumber, setPlateNumber] = useState('')
   const [message, setMessage] = useState('')
+
   const [checkoutResult, setCheckoutResult] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  // New state for preview
   const [ticketPreview, setTicketPreview] = useState(null)
   const [isPreviewLoading, setIsPreviewLoading] = useState(false)
 
-  // Function to get ticket preview
+
   const handlePreviewTicket = async (e) => {
     e.preventDefault()
     
@@ -95,7 +95,7 @@ function CheckOut() {
               id="plateNumber"
               value={plateNumber}
               onChange={(e) => setPlateNumber(e.target.value)}
-              placeholder="Enter plate number (e.g., ABC123)"
+              placeholder="Enter plate number (e.g., B1234ABC)"
               className="form-input"
               autoFocus
               disabled={isPreviewLoading}
