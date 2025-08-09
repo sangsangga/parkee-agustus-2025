@@ -46,6 +46,7 @@ function CheckOut() {
 
     try {
       const result = await parkingService.checkOut(plateNumber.toUpperCase())
+      debugger
       
       if (result.success) {
         setCheckoutResult(result.data)
