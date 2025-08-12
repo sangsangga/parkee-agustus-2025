@@ -63,7 +63,6 @@ public class CheckinServiceImpl implements CheckinService {
             throw new ValidationException("Failed to create ticket: " + response.getMessage(), "CHECKIN-004");
             
         } catch (ValidationException e) {
-            // Re-throw ValidationException to preserve the original error message
             throw e;
         } catch (Exception e) {
             log.error("Failed process message checkin {}", e.getMessage());
